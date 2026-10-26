@@ -2,12 +2,119 @@
 <html>
 <head>
     <title>TEST</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            animation: rainbowCycle 0.7s linear infinite;
+        }
+
+        @keyframes rainbowCycle {
+            0%   { background-color: #ff0000; } /* Red */
+            17%  { background-color: #ff7f00; } /* Orange */
+            33%  { background-color: #ffff00; } /* Yellow */
+            50%  { background-color: #00ff00; } /* Green */
+            67%  { background-color: #0000ff; } /* Blue */
+            83%  { background-color: #4b0082; } /* Indigo */
+            100% { background-color: #ff0000; } /* Back to Red */
+        }
+        
+        /* Styles for both bouncing images */
+        #bouncing-image, #bouncing-image2, #bouncing-image3, #bouncing-image4 {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            width: 150px;
+            height: auto;
+            user-select: none;
+        }
+    </style>
 </head>
 <body>
+
     <h1>Welcome to My Website</h1>
     <p>This is a test</p>
     <p>pls leave lol</p>
-    <a href="https://ibb.co/qLn46vFq"><img src="https://i.ibb.co/SDx1Sz7Y/0d26e29ff45ed3474c5fc514f4d69135.jpg" alt="0d26e29ff45ed3474c5fc514f4d69135" width="600" height="200" border="2"> </a>
+    <a href="https://ibb.co/qLn46vFq"><img src="https://i.ibb.co/SDx1Sz7Y/0d26e29ff45ed3474c5fc514f4d69135.jpg" alt="" width="600" height="200" border="2"></a>
     <h3>I DID NOT MEAN TO PUT THAT</h3>
+   
+    <!-- The bouncing images -->
+    <img id="bouncing-image" src="https://i.ibb.co/B5x1shMt/aeb1a978b33e414748b10a985d5f05b5.jpg" alt="Bouncing Logo 1">
+    <img id="bouncing-image2" src="https://i.ibb.co/Vp29z9XM/155ab0fddaba0f22f7aad565b566ba39.jpg" alt="Bouncing Logo 2">
+    <img id="bouncing-image3" src="https://i.ibb.co/Xk2KpQRg/Screenshot-2026-10-25-3-23-09-PM.png" alt="Bouncing Logo 3">
+    <img id="bouncing-image4" src="https://i.ibb.co/BHkFyMBj/34d36d2981deaaf79275c5794e825bfa.jpg" alt="Bouncing Logo 4">
+
+    <script>
+        // Store both images and randomize their individual starting speeds and positions
+        const bouncingObjects = ['bouncing-image', 'bouncing-image2', 'bouncing-image3', 'bouncing-image4'].map(id => {
+            // Random speeds between 2 and 7 (using negative values too so they can move left/up)
+            const randomSpeedX = (Math.random() * 4 + 3) * (Math.random() < 0.5 ? 1 : -1);
+            const randomSpeedY = (Math.random() * 4 + 3) * (Math.random() < 0.5 ? 1 : -1);
+
+            return {
+                element: document.getElementById(id),
+                posX: Math.random() * (window.innerWidth - 150),
+                posY: Math.random() * (window.innerHeight - 100),
+                speedX: 30,
+                speedY: 20
+            };
+        });
+
+        function updatePositions() {
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+
+            bouncingObjects.forEach(obj => {
+                const imgWidth = obj.element.clientWidth || 150;
+                const imgHeight = obj.element.clientHeight || 100;
+
+                // Move coordinates
+                obj.posX += obj.speedX;
+                obj.posY += obj.speedY;
+
+                // Horizontal collision
+                if (obj.posX + imgWidth >= screenWidth) {
+                    obj.speedX = -Math.abs(obj.speedX);
+                    obj.posX = screenWidth - imgWidth;
+                } else if (obj.posX <= 0) {
+                    obj.speedX = Math.abs(obj.speedX);
+                    obj.posX = 0;
+                }
+
+                // Vertical collision
+                if (obj.posY + imgHeight >= screenHeight) {
+                    obj.speedY = -Math.abs(obj.speedY);
+                    obj.posY = screenHeight - imgHeight;
+                } else if (obj.posY <= 0) {
+                    obj.speedY = Math.abs(obj.speedY);
+                    obj.posY = 0;
+                }
+
+                // Apply new positions
+                obj.element.style.left = obj.posX + 'px';
+                obj.element.style.top = obj.posY + 'px';
+            });
+
+            requestAnimationFrame(updatePositions);
+        }
+
+        // Start animation once the page loads
+        window.addEventListener('load', () => {
+            requestAnimationFrame(updatePositions);
+        });
+
+        // Handle window resizing safely for both images
+        window.addEventListener('resize', () => {
+            bouncingObjects.forEach(obj => {
+                if (obj.posX + obj.element.clientWidth > window.innerWidth) {
+                    obj.posX = window.innerWidth - obj.element.clientWidth;
+                }
+                if (obj.posY + obj.element.clientHeight > window.innerHeight) {
+                    obj.posY = window.innerHeight - obj.element.clientHeight;
+                }
+            });
+        });
+    </script>
+
 </body>
 </html>
